@@ -97,6 +97,44 @@
       box-shadow: 0 20px 65px rgba(113,57,87,.17);
     }
 
+    .lang-switcher {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 120;
+
+    display: flex;
+    gap: 4px;
+    padding: 5px;
+
+    background: rgba(255,255,255,.76);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.9);
+    border-radius: 999px;
+
+    box-shadow: 0 14px 45px rgba(113,57,87,.12);
+}
+
+    .lang-btn {
+        border: none;
+        background: transparent;
+        padding: 7px 11px;
+        border-radius: 999px;
+
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+
+        color: var(--berry);
+        cursor: pointer;
+        transition: .25s ease;
+    }
+
+    .lang-btn.active {
+        background: var(--berry);
+        color: white;
+    }
+
     .brand {
       display: inline-flex;
       align-items: center;
@@ -1110,6 +1148,10 @@
     IMPORTANT: expression mascots are contextual.
     The main hero mascot is never randomly replaced.
   -->
+    <div class="lang-switcher" aria-label="Ngôn ngữ">
+      <button class="lang-btn active" data-lang="vi" type="button" aria-pressed="true">VI</button>
+      <button class="lang-btn" data-lang="en" type="button" aria-pressed="false">EN</button>
+  </div>
   <div class="nav-wrap">
     <nav aria-label="EverUs navigation">
       <a class="brand" href="#top" aria-label="EverUs về đầu trang">
@@ -1544,6 +1586,112 @@
         );
       });
     }
+
+    // -------------------------
+    // Language switching
+    // -------------------------
+    const englishContent = {
+      ".nav-links a": ["Our story", "What EverUs does", "The journey"],
+      ".nav-cta": ["Get started"],
+      ".hero .eyebrow": ["♡ Made for two"],
+      ".hero h1": ["Love<br><span class=\"outline\">with intention.</span>"],
+      ".hero .lead": ["EverUs is a space for couples to turn dates into something more than deciding where to go or what to eat: stories you create together."],
+      ".hero-actions .btn": ["Explore EverUs →", "Our love story?"],
+      ".phone .mini-title": ["Where shall we go today?", "Us, today ♡"],
+      ".phone .mini-story": ["<strong>Chapter 03 · A slow afternoon</strong><br />When you first fall in love, everything feels new.<br />Your first date.<br />Your first message.<br />Your first kiss.<br />Today is a chance to look back on those first moments together."],
+      ".phone .mini-button": ["Discover now"],
+      ".float-card.fc1": ["<strong>12 days</strong>making memories together"],
+      ".float-card.fc2": ["<strong>A little question</strong>“Did what I said this afternoon make you feel sad?”"],
+      ".story .section-kicker": ["Our story"],
+      ".story h2": ["We're in love.<br>What comes next?"],
+      ".story-copy > p": ["Some love stories don't end. Others slowly drift—not because love is gone, but because we forget to keep choosing each other.", "A busy day at school. Overtime at work. A day with just enough energy to text, “I'm going to sleep first.” Then every date starts to feel the same: the usual restaurant, a movie, then home. One day, you realize you no longer know what the other is thinking or feeling. Looking back at old photos, you can't quite remember where you went, what you did, or how you laughed together."],
+      ".story-quote": ["“We still love each other. Sometimes, we just forget to make new memories together.”"],
+      ".story-card h3": ["Out of ideas", "Hard to say how we feel", "Moving too fast", "Memories left in the camera roll"],
+      ".story-card p": ["You want to go out together, but end up choosing the same familiar things.", "It's not that you don't care. Sometimes you just don't know how to start the conversation.", "School, work, and distance can make the little rituals of romance disappear.", "So many lovely moments, but nowhere that truly tells the story of your journey together."],
+      ".soft-section .section-kicker": ["A space where your love has room to grow"],
+      ".soft-section .section-head h2": ["EverUs helps you love<br>with intention."],
+      ".soft-section .section-head p": ["Every challenge is a chance to experience a little more romance together. EverUs gives you small reasons to make time for each other, talk, play, and look back on the journey you've shared."],
+      ".problem h3": ["Not sure what to say", "Not sure where to go", "Hard to stay close", "Forgetting how far you've come"],
+      ".problem p": ["Thoughtful questions and stories open the door to more natural conversations.", "Instead of another list of places, EverUs turns a date into a story with a setting and a purpose.", "Thoughtful challenges and little rituals help you stay connected, even on busy days.", "Build a shared memory where photos, dates, and milestones become an exhibition of your love story."],
+      ".features .section-kicker": ["Inside EverUs"],
+      ".features .section-head h2": ["Every feature is a chance<br>to feel closer."],
+      ".feature-copy .feature-label": ["01 · Dates told as stories...", "02 · A private space for memories", "03 · Little moments, every day", "04 · A gentler way through conflict"],
+      ".feature-copy h3": ["Don't just go on a date.<br>Live a story together.", "Memories belong<br>beyond the camera roll.", "“How are you<br>feeling today?”", "When you disagree,<br>don't just try to win."],
+      ".feature-copy p": ["An EverUs date begins with an idea and ends with a memory. Each place, meal, or activity plays a part in the story, giving you both something to look forward to and remember.", "Together, build a living journal of photos, places, favorite words, special dates, and little things only you understand. Over time, EverUs tells your story as a map of shared memories.", "A small message, sent regularly. Every day, you get a moment to check in with your feelings and share them. EverUs helps you care for and understand each other, even on the busiest days.", "EverUs creates a private space for you to slow down, notice what you're feeling, and try to understand each other's perspective. AI helps guide the conversation without judgment and never replaces a mental health professional. Understand yourself better to understand each other better."],
+      ".feature-copy li": ["Choose a mood, duration, budget, and kind of experience.", "Get a personalized itinerary for two, then invite your partner.", "Turn a date into an experience neither of you has had before.", "Add and edit memories together.", "A timeline of dates, places, and milestones.", "A private space, not another social network.", "Send a thoughtful message to your partner.", "Look back on how your feelings change over time.", "Stay connected through little acts of care.", "Slow things down and separate what happened from how it felt.", "Find ways to express what you need without blame.", "Notice patterns and understand each other more deeply over time."],
+      ".feature-visual .window-top span": ["CHAPTER 04", "♡ 2 people", "OUR STORY", "DAILY CHECK-IN", "9:42 PM", "REFLECTION ROOM", "PRIVATE"],
+      ".feature-visual .mock-window > h3": ["A wandering afternoon<br>together", "How are you feeling today?"],
+      ".feature-visual .mock-window > p": ["Ho Chi Minh City · 3 hours · under 300k VND", "No need to explain. Choose what feels closest."],
+      ".feature-visual .mini-story": ["Start with an alley neither of you has turned down before. Each of you picks a small gift for the other, under 50,000 VND. Then find a quiet spot and ask: “What has made you happiest lately?”", "A little prompt for tonight: <strong>“Is there anything you'd like me to understand better?”</strong>"],
+      ".timeline .event strong": ["The first day of us...", "A day with no plans", "One more page ♡"],
+      ".timeline .event span": ["“It rained so hard that day.”", "It became our happiest day.", "“There are still so many places to go together.”"],
+      ".timeline .event small": ["14.02.2026", "08.03.2026", "Today"],
+      ".chat .bubble": ["Take a deep breath in for five seconds, hold it for ten, then breathe out. Let's slow down a little. What hurt you most about what just happened?", "I'm not angry about that. I'm sad because I felt like I wasn't being heard.", "Maybe what you need isn't an explanation, but to feel understood?"],
+      ".journey .section-kicker": ["A day with EverUs"],
+      ".journey .section-head h2": ["Love grows through<br>little moments."],
+      ".journey .section-head p": ["Sometimes it's a message at just the right time, a spontaneous afternoon, or a question asked instead of kept inside."],
+      ".journey-step h4": ["Check in", "Play together", "Go somewhere new", "Speak from the heart", "Save the moment"],
+      ".journey-step p": ["Start the day with a little question.", "A mini game to rediscover your curiosity.", "A date story made just for the two of you.", "A gentle story that opens the door to a deeper conversation.", "Add another page to your story together."],
+      ".cta .section-kicker": ["Where Love Becomes a Story"],
+      ".cta h2": ["Two people.<br>Endless stories."],
+      ".cta p": ["EverUs won't tell you how to love. It simply creates more moments for you to understand, discover, and grow with each other. We'd be honored to join you on your journey together."],
+      ".cta .btn": ["Try EverUs now →"],
+      ".footer-row > div:first-child": ["<span class=\"footer-brand\">EverUs</span> · Love with intention, grow closer together."],
+      ".footer-row > div:nth-child(2)": ["Made for two ♡ · Vietnam"],
+      ".footer-row > div:nth-child(4)": ["Contact information: <a href=\"mailto:info@everus.com\">everus.work@gmail.com</a>"]
+    };
+
+    const originalContent = new Map();
+    Object.keys(englishContent).forEach(selector => {
+      originalContent.set(selector, [...document.querySelectorAll(selector)].map(element => element.innerHTML));
+    });
+
+    const languageButtons = document.querySelectorAll(".lang-btn");
+    const setLanguage = language => {
+      const isEnglish = language === "en";
+      document.documentElement.lang = language;
+      document.title = isEnglish
+        ? "EverUs — Love with intention, grow closer together"
+        : "EverUs — Yêu theo cách lành và gắn kết hơn";
+      document.querySelector('meta[name="description"]').content = isEnglish
+        ? "EverUs helps couples create meaningful dates, communicate with care, and build a story together."
+        : "EverUs — Yêu theo cách lành và gắn kết hơn. Một không gian dành cho hai người để cùng tạo nên những câu chuyện tình yêu có ý nghĩa.";
+      document.querySelector(".lang-switcher").setAttribute("aria-label", isEnglish ? "Language" : "Ngôn ngữ");
+      document.querySelector("nav").setAttribute("aria-label", isEnglish ? "EverUs navigation" : "Điều hướng EverUs");
+      document.querySelector(".brand").setAttribute("aria-label", isEnglish ? "EverUs home" : "EverUs về đầu trang");
+      document.querySelector(".phone").setAttribute("aria-label", isEnglish ? "EverUs interface preview" : "Minh hoạ giao diện EverUs");
+      document.querySelector("#mainMascot").alt = isEnglish ? "EverUs mascot" : "Mascot chính của EverUs";
+
+      Object.entries(englishContent).forEach(([selector, translations]) => {
+        document.querySelectorAll(selector).forEach((element, index) => {
+          element.innerHTML = isEnglish ? translations[index] : originalContent.get(selector)[index];
+        });
+      });
+
+      languageButtons.forEach(button => {
+        const active = button.dataset.lang === language;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+
+      try {
+        localStorage.setItem("everus-language", language);
+      } catch (error) {
+        // The language switch still works when browser storage is unavailable.
+      }
+    };
+
+    languageButtons.forEach(button => {
+      button.addEventListener("click", () => setLanguage(button.dataset.lang));
+    });
+
+    let savedLanguage = "vi";
+    try {
+      savedLanguage = localStorage.getItem("everus-language") || "vi";
+    } catch (error) {
+      // Keep Vietnamese as the default when browser storage is unavailable.
+    }
+    setLanguage(savedLanguage === "en" ? "en" : "vi");
   </script>
 </body>
 </html>
